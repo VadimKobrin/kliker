@@ -3,6 +3,7 @@ import os
 import stat
 from tkinter import messagebox
 import random
+import numpy as np
 import json
 from PIL import Image, ImageTk
 from functools import partial
@@ -15,58 +16,38 @@ rebirth_count = 0
 upgrade_end_count = 0
 upgradexx_count = 0
 mouses = 0
-speed = 10000
+speed = 40000
 
 upgrade_costs = {
-    "upgrade0":  25,
-    "upgrade1":  100,
-    "upgrade2":  300,
-    "upgrade3":  800,
-    "upgrade4":  2100,
-    "upgrade5":  5500,
-    "upgrade6":  15000,
-    "upgrade7":  42000,
-    "upgrade8":  200000,
-    "upgrade9": 550000,
-    "upgrade10": 1500000,
-    "upgrade11": 4000000,
-    "upgrade12": 9500000,
-    "upgrade13": 15000000,
-    "upgrade14": 21000000,
-    "upgrade15": 50000001,
-    "upgrade16": 90000001,
-    "upgradex2": 50000,
-    "upgradex3": 1500000,
-    "upgrade_mouse": 1000,
-    "upgrade_mouse_speed": 20000
+    "upgrade0":  10,    "upgrade1":  40,    "upgrade2":  120,    "upgrade3":  300,    "upgrade4":  800,
+    "upgrade5":  1400,   "upgrade6":  2700,    "upgrade7":  5000,    "upgrade8":  8500,    "upgrade9":  15000,
+    "upgrade10": 23000,    "upgrade11": 35000,    "upgrade12": 65000,    "upgrade13": 100000,    "upgrade14": 180000,
+    "upgrade15": 300000,    "upgrade16": 470000,    "upgrade17": 700000,    "upgrade18": 1000000,
+    "upgrade19": 1700000,    "upgrade20": 3100000,    "upgrade21": 5000000,    "upgrade22": 8000000,
+    "upgrade23": 15000000,    "upgrade24": 35000000,    "upgrade25": 60000000,    "upgrade26": 100000000,
+    "upgrade27": 140000000,    "upgrade28": 230000000,    "upgrade29": 350000000,    "upgrade30": 500000000,
+    "upgradex2": 50000,    "upgradex3": 1500000,    "upgrade_mouse": 3000,    "upgrade_mouse_speed": 10000
 }
 
 upgrade_costs_start = {
-    "upgrade0": 25,
-    "upgrade1": 100,
-    "upgrade2": 300,
-    "upgrade3": 800,
-    "upgrade4": 2100,
-    "upgrade5": 5500,
-    "upgrade6": 15000,
-    "upgrade7": 42000,
-    "upgrade8": 200000,
-    "upgrade9": 550000,
-    "upgrade10": 1500000,
-    "upgrade11": 4000000,
-    "upgrade12": 9500000,
-    "upgrade13": 15000000,
-    "upgrade14": 21000000,
-    "upgrade15": 50000001,
-    "upgrade16": 90000001,
-    "upgradex2": 50000,
-    "upgradex3": 1500000,
-    "upgrade_mouse": 1000,
-    "upgrade_mouse_speed": 20000
+    "upgrade0":  10,    "upgrade1":  40,    "upgrade2":  120,    "upgrade3":  300,    "upgrade4":  800,
+    "upgrade5":  1400,   "upgrade6":  2700,    "upgrade7":  5000,    "upgrade8":  8500,    "upgrade9":  15000,
+    "upgrade10": 23000,    "upgrade11": 35000,    "upgrade12": 65000,    "upgrade13": 100000,    "upgrade14": 180000,
+    "upgrade15": 300000,    "upgrade16": 470000,    "upgrade17": 700000,    "upgrade18": 1000000,
+    "upgrade19": 1700000,    "upgrade20": 3100000,    "upgrade21": 5000000,    "upgrade22": 8000000,
+    "upgrade23": 15000000,    "upgrade24": 35000000,    "upgrade25": 60000000,    "upgrade26": 100000000,
+    "upgrade27": 140000000,    "upgrade28": 230000000,    "upgrade29": 350000000,    "upgrade30": 500000000,
+    "upgradex2": 50000,    "upgradex3": 1500000,    "upgrade_mouse": 3000,    "upgrade_mouse_speed": 10000
 }
 
 increment = [
-    1, 2, 5, 8, 11, 17, 30, 50, 70, 130, 200, 300, 450, 750, 1000, 1500, 123
+    1, 2, 4, 7, 10,
+    14, 17, 30, 50, 75,
+    110, 200, 350, 500, 700,
+    1000, 1250, 1700, 2400,
+    3500, 5000, 6750, 9000,
+    12000, 15000, 18500, 21000,
+    25000, 30000, 50000, -25000
 ]
 
 
@@ -203,19 +184,6 @@ def create_menu():
     window.config(menu=menu_bar)
 
 
-def random_color():
-    return "#{:06x}".format(random.randint(0, 0xFFFFFF))
-
-
-def change_color():
-    global button_main
-    if button_main is not None and isinstance(button_main, (str, int)):
-        new_color = random_color()
-        canvas.itemconfig(button_main, fill=new_color)
-    else:
-        messagebox.showinfo("Ошибка", "Кнопка не существует или имеет неверный тип!")
-
-
 def auto_click():
     global mouses, speed
     n = 0
@@ -233,10 +201,10 @@ def mouse_cliker(upgrade_key):
         check -= cost
         if upgrade_key == "upgrade_mouse":
             mouses += 1
-            upgrade_costs[upgrade_key] = int(cost * 3)
+            upgrade_costs[upgrade_key] = int(cost * 5)
         elif upgrade_key == "upgrade_mouse_speed":
-            speed = int(speed/2)
-            upgrade_costs[upgrade_key] = int(cost * 10)
+            speed = int(speed/np.sqrt(2))
+            upgrade_costs[upgrade_key] = int(cost * 12)
         update_labels()
         if mouses == 1:
             auto_click()
@@ -258,12 +226,46 @@ def upgrade(upgrade_key, increment_value):
         else:
             coeff += increment_value
             upgrade_costs[upgrade_key] = int(cost * 1.3)
-        if upgrade_key == "upgrade16":
+        if upgrade_key == "upgrade30":
             upgrade_end_count += 1
         check -= cost
         update_labels()
     else:
         messagebox.showinfo("Посмотри на циферки", f"Нужно {format_number(cost)} кликов")
+    if coeff < 1:
+        messagebox.showinfo("Точно всё хорошо", "ЖИВИ!!! Не бей бедного разраба!!!")
+        coeff = 1
+
+
+def change_color():     #на главную кнопку
+    global button_main
+    if button_main is not None and isinstance(button_main, (str, int)):
+        new_color = random_color()
+        canvas.itemconfig(button_main, fill=new_color)
+    else:
+        messagebox.showinfo("Ошибка", "Кнопка не существует или имеет неверный тип!")
+
+
+def random_color():
+    def color_distance(c1, c2):
+        return sum((a - b) ** 2 for a, b in zip(c1, c2)) ** 0.5
+    purple = (128, 0, 128)
+    black = (0, 0, 0)
+    green = (0, 128, 0)
+    while True:
+        color = random.randint(0, 0xFFFFFF)
+        # Разделение цвета на компоненты RGB
+        r = (color >> 16) & 0xFF
+        g = (color >> 8) & 0xFF
+        b = color & 0xFF
+        brightness = (r * 0.299 + g * 0.587 + b * 0.114)
+        # Проверка, что цвет достаточно далёк от запрещённых цветов и не слишком тёмный
+        if (color_distance((r, g, b), purple) > 100 and
+                color_distance((r, g, b), black) > 100 and
+                color_distance((r, g, b), green) > 100 and
+                brightness > 70):
+            # Форматирование цвета в шестнадцатеричном формате
+            return "#{:06x}".format(color)
 
 
 def rebirth(step=0):
@@ -295,29 +297,29 @@ def rebirth(step=0):
 
 def rebirth_condition():
     global upgrade_end_count
-    if upgrade_end_count >= 5:
+    if upgrade_end_count >= 0:
         buttonRebirth.config(state=tk.DISABLED)
         rebirth()
     else:
-        messagebox.showinfo("Ребитх", "Необходимо улучшить последнее улучшение пять раз!")
+        messagebox.showinfo("Не ребитх!", "Необходимо сделать последнее улучшение ПЯТЬ раз!")
 
 
-def slider(value):
-    value = int(value)
+def slider(value_slider):
+    value_slider = int(value_slider)
     koef_slider = 1
-    buttons = [f"button{q}" for q in range(0, 17)]
-    labels = [f"label_upgrade{q}" for q in range(0, 17)]
+    buttons = [f"button{q}" for q in range(0, 31)]
+    labels = [f"label_upgrade{q}" for q in range(0, 31)]
 
     for q, button in enumerate(buttons):
-        globals()[button].place(x=950, y=5 + q * 45 - value * koef_slider)
+        globals()[button].place(x=950, y=5 + q * 45 - value_slider * koef_slider)
 
     for q, label in enumerate(labels):
-        globals()[label].place(x=1250, y=5 + q * 45 - value * koef_slider)
+        globals()[label].place(x=1250, y=5 + q * 45 - value_slider * koef_slider)
 
-    buttonx2.place(x=950, y=950 - value * koef_slider)
-    buttonx3.place(x=950, y=1000 - value * koef_slider)
-    label_upgradex2.place(x=1250, y=950 - value * koef_slider)
-    label_upgradex3.place(x=1250, y=1000 - value * koef_slider)
+    buttonx2.place(x=950, y=1500 - value_slider * koef_slider)
+    buttonx3.place(x=950, y=1550 - value_slider * koef_slider)
+    label_upgradex2.place(x=1250, y=1500 - value_slider * koef_slider)
+    label_upgradex3.place(x=1250, y=1550 - value_slider * koef_slider)
 
 
 def update_labels():
@@ -343,6 +345,20 @@ def update_labels():
         ("label_upgrade14", f"Цена: {format_number(upgrade_costs['upgrade14'])}"),
         ("label_upgrade15", f"Цена: {format_number(upgrade_costs['upgrade15'])}"),
         ("label_upgrade16", f"Цена: {format_number(upgrade_costs['upgrade16'])}"),
+        ("label_upgrade17", f"Цена: {format_number(upgrade_costs['upgrade17'])}"),
+        ("label_upgrade18", f"Цена: {format_number(upgrade_costs['upgrade18'])}"),
+        ("label_upgrade19", f"Цена: {format_number(upgrade_costs['upgrade19'])}"),
+        ("label_upgrade20", f"Цена: {format_number(upgrade_costs['upgrade20'])}"),
+        ("label_upgrade21", f"Цена: {format_number(upgrade_costs['upgrade21'])}"),
+        ("label_upgrade22", f"Цена: {format_number(upgrade_costs['upgrade22'])}"),
+        ("label_upgrade23", f"Цена: {format_number(upgrade_costs['upgrade23'])}"),
+        ("label_upgrade24", f"Цена: {format_number(upgrade_costs['upgrade24'])}"),
+        ("label_upgrade25", f"Цена: {format_number(upgrade_costs['upgrade25'])}"),
+        ("label_upgrade26", f"Цена: {format_number(upgrade_costs['upgrade26'])}"),
+        ("label_upgrade27", f"Цена: {format_number(upgrade_costs['upgrade27'])}"),
+        ("label_upgrade28", f"Цена: {format_number(upgrade_costs['upgrade28'])}"),
+        ("label_upgrade29", f"Цена: {format_number(upgrade_costs['upgrade29'])}"),
+        ("label_upgrade30", f"Цена: {format_number(upgrade_costs['upgrade30'])}"),
         ("label_upgradex2", f"Цена: {format_number(upgrade_costs['upgradex2'])}"),
         ("label_upgradex3", f"Цена: {format_number(upgrade_costs['upgradex3'])}"),
         ("label_upgrade_mouse", f"Цена: {format_number(upgrade_costs['upgrade_mouse'])}"),
@@ -400,7 +416,7 @@ window.bind("<MouseWheel>", lambda event: slider.set(slider.get() - int(event.de
 figure()
 # Открываем иконку курсора
 mouse_icon = Image.open("kursor.ico")
-mouse_icon = mouse_icon.resize((16, 16), Image.LANCZOS)
+mouse_icon = mouse_icon.resize((16, 16), Image.Resampling.LANCZOS)
 mouse_icon = ImageTk.PhotoImage(mouse_icon)
 # Создаем метку с иконкой мышки
 label_mouse_icon = tk.Label(window, image=mouse_icon)
@@ -410,40 +426,40 @@ window.update()
 
 
 #вывод данных
-label_check = tk.Label(window, text="Счёт: 0", font=("Comic Sans MS", 16, "bold"), fg="purple")
+label_check = tk.Label(window, text="Счёт: 0", font=("Times New Roman", 16, "italic bold"), fg="green")
 label_check.place(x=400, y=70)
-label_coeff = tk.Label(window, text="Сила клика: ×1", font=("Times New Roman", 16, "italic"), fg="orange")
+label_coeff = tk.Label(window, text="Сила клика: ×1", font=("Times New Roman", 16, "italic bold"), fg="green")
 label_coeff.place(x=400, y=100)
-label_rebirth = tk.Label(window, text="Ребитхи: 0", font=("Arial", 16, "bold"), fg="green")
+label_rebirth = tk.Label(window, text="Ребитхи: 0", font=("Times New Roman", 16, "italic bold"), fg="green")
 label_rebirth.place(x=400, y=130)
-label_upgradeX = tk.Label(window, text="Последних улучшений: 0/5", font=("Arial", 16, "bold"), fg="blue")
+label_upgradeX = tk.Label(window, text="Последних улучшений: 0/5", font=("Times New Roman", 16, "italic bold"), fg="green")
 label_upgradeX.place(x=400, y=170)
 
 #кнопки и цена улучшений
-buttonRebirth = tk.Button(window, text=" РЕБИТХ! ", font=("Comic Sans MS", 16, "bold"), fg="green",
+buttonRebirth = tk.Button(window, text=" РЕБИТХ! ", font=("Comic Sans MS", 16, "italic bold"), fg="green",
                     command=lambda: rebirth_condition(), width=30, height=1)
 buttonRebirth.place(x=400, y=1)
 
-for i in range(0, 17):
+for i in range(0, 31):
     label = tk.Label(window, text=f"Цена: {format_number(upgrade_costs[f'upgrade{i}'])}", font=("Comic Sans MS", 16, "bold"), fg="purple")
     label.place(x=1250, y=5 + i * 45)
     globals()[f'label_upgrade{i}'] = label
 
-for i in range(0, 17):
-    increment_value = increment[i]
-    upgrade_button = tk.Button(window, text=f"улучшение на {increment_value}", command=partial(upgrade, f"upgrade{i}", increment_value), width=30, height=2)
+for i in range(0, 31):
+    value = increment[i]
+    upgrade_button = tk.Button(window, text=f"улучшение на {value}", command=partial(upgrade, f"upgrade{i}", value), width=30, height=2)
     upgrade_button.place(x=950, y=5 + i * 45)
     globals()[f'button{i}'] = upgrade_button
 
 #кнопки умножения
 buttonx2 = tk.Button(window, text="умножение на 2", command=lambda: upgrade("upgradex2", 2), width=30, height=2)
-buttonx2.place(x=950, y=950)
+buttonx2.place(x=950, y=1500)
 label_upgradex2 = tk.Label(window, text=f"Цена: {format_number(upgrade_costs['upgradex2'])}", font=("Comic Sans MS", 14, "bold"), fg="purple")
-label_upgradex2.place(x=1250, y=950)
+label_upgradex2.place(x=1250, y=1500)
 buttonx3 = tk.Button(window, text="умножение на 3", command=lambda: upgrade("upgradex3", 3), width=30, height=2)
-buttonx3.place(x=950, y=1000)
+buttonx3.place(x=950, y=1550)
 label_upgradex3 = tk.Label(window, text=f"Цена: {format_number(upgrade_costs['upgradex3'])}", font=("Comic Sans MS", 14, "bold"), fg="purple")
-label_upgradex3.place(x=1250, y=1000)
+label_upgradex3.place(x=1250, y=1550)
 
 #доп мышки
 button_mouse = tk.Button(window, text=" автомышкааа!!!", command=lambda: mouse_cliker("upgrade_mouse"), width=20, height=2)
@@ -457,7 +473,7 @@ label_upgrade_mouse_speed.place(x=530, y=355)
 label_mouse = tk.Label(window, text=f": {mouses}    Скорость раз в: {speed} мс", font=("Comic Sans MS", 12, "bold"), fg="purple")
 label_mouse.place(x=50, y=400)
 
-
+update_labels()
 create_menu()
 
 window.mainloop()
