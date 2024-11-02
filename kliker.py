@@ -278,8 +278,6 @@ def rebirth(step=0):
     else:
         canvas.config(bg=random_color())
         field_color = canvas.cget("bg")
-        if field_color == "purple":
-            canvas.config(bg=random_color())
         rebirth_count += 1
         check = 0
         coeff = 1
@@ -297,7 +295,7 @@ def rebirth(step=0):
 
 def rebirth_condition():
     global upgrade_end_count
-    if upgrade_end_count >= 0:
+    if upgrade_end_count >= 5:
         buttonRebirth.config(state=tk.DISABLED)
         rebirth()
     else:
@@ -401,7 +399,7 @@ def button_click(event=None):
     return check
 
 
-#основная часть
+# основная часть
 window = tk.Tk()
 window.title("Мое приложение")
 window.geometry("1600x1000")
@@ -425,7 +423,7 @@ label_mouse_icon.place(x=36, y=405)
 window.update()
 
 
-#вывод данных
+# вывод данных
 label_check = tk.Label(window, text="Счёт: 0", font=("Times New Roman", 16, "italic bold"), fg="green")
 label_check.place(x=400, y=70)
 label_coeff = tk.Label(window, text="Сила клика: ×1", font=("Times New Roman", 16, "italic bold"), fg="green")
@@ -435,9 +433,9 @@ label_rebirth.place(x=400, y=130)
 label_upgradeX = tk.Label(window, text="Последних улучшений: 0/5", font=("Times New Roman", 16, "italic bold"), fg="green")
 label_upgradeX.place(x=400, y=170)
 
-#кнопки и цена улучшений
+# кнопки и цена улучшений
 buttonRebirth = tk.Button(window, text=" РЕБИТХ! ", font=("Comic Sans MS", 16, "italic bold"), fg="green",
-                    command=lambda: rebirth_condition(), width=30, height=1)
+                          command=lambda: rebirth_condition(), width=30)
 buttonRebirth.place(x=400, y=1)
 
 for i in range(0, 31):
@@ -447,26 +445,32 @@ for i in range(0, 31):
 
 for i in range(0, 31):
     value = increment[i]
-    upgrade_button = tk.Button(window, text=f"улучшение на {value}", command=partial(upgrade, f"upgrade{i}", value), width=30, height=2)
+    upgrade_button = tk.Button(window, text=f"улучшение на {value}", font=("Comic Sans MS", 12, "italic bold"),
+                               command=partial(upgrade, f"upgrade{i}", value))
+    upgrade_button.config(width=20)
     upgrade_button.place(x=950, y=5 + i * 45)
     globals()[f'button{i}'] = upgrade_button
 
-#кнопки умножения
-buttonx2 = tk.Button(window, text="умножение на 2", command=lambda: upgrade("upgradex2", 2), width=30, height=2)
+# кнопки умножения
+buttonx2 = tk.Button(window, text="умножение на 2", font=("Comic Sans MS", 12, "italic bold"),
+                     command=lambda: upgrade("upgradex2", 2), width=20)
 buttonx2.place(x=950, y=1500)
 label_upgradex2 = tk.Label(window, text=f"Цена: {format_number(upgrade_costs['upgradex2'])}", font=("Comic Sans MS", 14, "bold"), fg="purple")
 label_upgradex2.place(x=1250, y=1500)
-buttonx3 = tk.Button(window, text="умножение на 3", command=lambda: upgrade("upgradex3", 3), width=30, height=2)
+buttonx3 = tk.Button(window, text="умножение на 3", font=("Comic Sans MS", 12, "italic bold"),
+                     command=lambda: upgrade("upgradex3", 3), width=20)
 buttonx3.place(x=950, y=1550)
 label_upgradex3 = tk.Label(window, text=f"Цена: {format_number(upgrade_costs['upgradex3'])}", font=("Comic Sans MS", 14, "bold"), fg="purple")
 label_upgradex3.place(x=1250, y=1550)
 
-#доп мышки
-button_mouse = tk.Button(window, text=" автомышкааа!!!", command=lambda: mouse_cliker("upgrade_mouse"), width=20, height=2)
+# доп мышки
+button_mouse = tk.Button(window, text=" автоклики!",
+                         command=lambda: mouse_cliker("upgrade_mouse"), width=20, height=2)
 button_mouse.place(x=50, y=350)
 label_upgrade_mouse = tk.Label(window, text=f"Цена: {format_number(upgrade_costs['upgrade_mouse'])}", font=("Comic Sans MS", 12, "bold"), fg="purple")
 label_upgrade_mouse.place(x=210, y=355)
-button_mouse_speed = tk.Button(window, text=" улучшение скорости мыши", command=lambda: mouse_cliker("upgrade_mouse_speed"), width=23, height=2)
+button_mouse_speed = tk.Button(window, text=" улучшение скорости мыши",
+                               command=lambda: mouse_cliker("upgrade_mouse_speed"), width=23, height=2)
 button_mouse_speed.place(x=350, y=350)
 label_upgrade_mouse_speed = tk.Label(window, text=f"Цена: {format_number(upgrade_costs['upgrade_mouse_speed'])}", font=("Comic Sans MS", 12, "bold"), fg="purple")
 label_upgrade_mouse_speed.place(x=530, y=355)
